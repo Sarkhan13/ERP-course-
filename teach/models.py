@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 from django.contrib.auth.models import User
 
 
@@ -12,7 +12,7 @@ class teacher(models.Model):
     salary = models.IntegerField(verbose_name = 'maaş')
     profession = models.CharField(max_length=100, verbose_name = 'ixtisas')
     workpractice = models.TextField(verbose_name = 'iş təcrubəsi')
-    profilepic = models.ImageField(verbose_name='profil şəkli')
+    profilepic = models.ImageField(verbose_name='profil şəkli', upload_to='profilepic/')
     techerid = models.IntegerField( verbose_name = 'Müəllim İD-si')
 
     created_date = models.DateTimeField(auto_now_add = True)
@@ -21,3 +21,7 @@ class teacher(models.Model):
 
     def __str__(self):
         return str(self.name)
+    
+    @property
+    def get_url(self):
+        return reverse('teachdetail', kwargs={'id':self.id})
