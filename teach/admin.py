@@ -3,4 +3,5 @@ from .models import *
 
 
 admin.site.register(teacher)
+admin.site.register(group)
 
