@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}   
+   
+   
+{% block body %}
+
+ <!-- Content wrapper -->
+ <div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Tələbə Modulu /</span> Jurnallar Cədvəli</h4>
+      
+
+   {% for group in groups %}
+   <div class="card">
+    <h5 class="card-header"><a href="{{ group.get_url  }}">Qrup:{{ group.name }}</a></h5>
+    <div class="table-responsive text-nowrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Tələbənin ad/soyadı</th>
+            {% for date in dates %}
+            {% if date.group == group %}
+            {% ifchanged date.date_time %}
+            <th>{{ date.date_time }}</th>
+            {% endifchanged %}
+            {% endif %}
+            {% endfor %}
+            
+          </tr>
+        </thead>
+        
+        <tbody class="table-border-bottom-0">
+          {% for stud in group.student_set.all %}
+          
+          <tr>
+            
+            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong><a href="">{{ stud.name }} {{ stud.surname }}</a></strong></td>
+            
+            
+            {% for journal in stud.journal_set.all %}
+            {% if journal.existence == True %}
+            <td>
+              {{ journal.rate }}
+            </td>
+            {% elif journal.existence == False %}
+            <td>
+              qb
+            </td>
+          
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+           
+          </tr>
+        
+        </tbody>
+      
+      </table>
+    </div>
+  </div>
+  <br><br>
+  {% endfor %}
+  <!--/ Basic Bootstrap Table -->
+  {% endblock %}

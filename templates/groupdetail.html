@@ -14,26 +14,20 @@
                 <div class="col-md-12">
                   
                   <div class="card mb-4">
-                    <h5 class="card-header">{{ group.name }} </h5>
+                    <h5 class="card-header">Qrup:  {{ group.name }} </h5>
                     <!-- Account -->
                     <div class="card-body">
                       <div class="d-flex align-items-start align-items-sm-center gap-4">
-                        <!-- <img
-                          src="{{ teach.profilepic.url }}"
-                          alt="user-avatar"
-                          class="d-block rounded"
-                          height="100"
-                          width="100"
-                          id="uploadedAvatar"
-                        /> -->
+                       
                         <div class="button-wrapper">
-                         <p class="text-muted mb-0">Dərsin müəllimi:   </p><span>{{ group.teach.name }}</span>
-                          <p class="text-muted mb-0">Dərsin adı:   </p><span>{{ group.lesson }}</span>
-                          <p class="text-muted mb-0">Dərs günü:    </p><span>{{ group.lesdays }}</span>
-                          <p class="text-muted mb-0">Dərsə başlama tarixi:    </p><span>{{ group.begin_date }}</span>
-                          <p class="text-muted mb-0">Dərsi bitirəcəkləri tarix:      </p><span>{{ group.end_date }}</span>
+                         <p class="text-muted mb-0">Qrupun müəllimi:   </p><span style="color: rgb(17, 16, 16);"> <h4>{{ group.teach.name }} {{ group.teach.surname }}</h4></span>
+                          <p class="text-muted mb-0">Qrupun tələbələri:   </p>{% for s in group.student_set.all%} <p style="color: rgb(86, 86, 236);"><strong>{{ s.name }} {{s.surname}}</strong></p>{% endfor %}
+                          <p class="text-muted mb-0">Qrupun taskları:   </p>{% for t in group.task_set.all %}<p style="color: rgb(16, 16, 19);"><strong>{{ t.title }}</strong></p>{% endfor %}
 
-                          <!-- <p class="text-muted mb-0">Müəllim İD:</p><span>{{ teach.techerid }}</span> -->
+
+                          <a href="{% url 'group_delete' group.id %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Qrupu sil</button></a>
+                          <a href="{% url 'group_update' group.id %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Qrupu update et</button></a>
+                          
                         </div>
                       </div>
                     </div>
@@ -43,16 +37,7 @@
                     </div>
                     <!-- /Account -->
                   </div>
-                  <div class="card">
-                    
-                    <div class="card-body">
-                      <a  href="{% url 'group_update' group.id %}"><button style="margin-bottom: 20px; "  type="submit" class="btn btn-danger deactivate-account">Update Group</button></a>
-                      <form id="formAccountDeactivation" onsubmit="return false">
-                        
-                        <a href="{% url 'group_delete' group.id %}"><button type="submit" class="btn btn-danger deactivate-account">Delete Group</button></a>
-                      </form>
-                    </div>
-                  </div>
+                 
                 </div>
               </div>
             </div>

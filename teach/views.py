@@ -1,8 +1,15 @@
-from django.shortcuts import render,redirect,get_object_or_404
-from .models import teacher,group
+from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
+from .models import *
 # from django.db.models import Count
-from .forms import teacher_form,group_form
+from .forms import *
 from django.contrib.auth.models import User
+# from .tasks import test_func
+
+
+
+# def test(request):
+#     test_func.delay()
+#     return HttpResponse("Done")
 
 def teachers(request):
     teachers = teacher.objects.all()
@@ -78,7 +85,7 @@ def teacher_add(request):
             post.teacher = User.objects.get(id=1)
             post.save()
 
-            return redirect(teachers)
+            return redirect(post.get_url)
 
     else:
         form = teacher_form()
@@ -99,7 +106,7 @@ def teacher_update(request, id):
     if form.is_valid():
         form.save()
 
-        return redirect(teachers)
+        return redirect(post.get_url)
 
     contex = {
         'form': form,
@@ -148,7 +155,7 @@ def group_update(request, id):
     if form.is_valid():
         form.save()
 
-        return redirect(grouppage)
+        return redirect(post.get_url)
 
     contex = {
         'form': form,
@@ -166,4 +173,217 @@ def group_delete(request,id):
 
     return redirect(grouppage)
 
+
+
+def studentpage(request):
+    students = student.objects.all()
+
+    contex = {
+        'students': students
+    }
+
+
+    return render(request, 'student.html', contex)
+
+
+
+def student_create(request):
+    form = student_form()
+
+    if request.method == 'POST':
+        form = student_form(request.POST or None,request.FILES or None)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(studentpage)
+        
+    else:
+        form = student_form()
+
+    contex = {
+        'form': form,
+    } 
+
+
+    return render(request, 'foradd.html',contex)
+
+
+
+def student_update(request,id):
+    post = get_object_or_404(student, id=id)
+
+    form = student_form(request.POST or None,request.FILES or None,instance=post)
+
+    if form.is_valid():
+        form.save()
+
+        return redirect(studentpage)
     
+
+    contex = {
+        'form': form,
+    } 
+
+
+    return render(request, 'foradd.html',contex)
+
+
+
+def student_delete(request,id):
+    post = get_object_or_404(student, id=id)
+
+    post.delete()
+
+    return redirect(studentpage)
+    
+
+
+def journalpage(request):
+    groups = group.objects.all()
+
+    students = student.objects.all()
+
+    journals = journal.objects.all()
+
+    dates = date.objects.all().order_by('date_time')
+
+    contex = {
+        'groups': groups,
+        'students': students,
+        'journals': journals,
+        'dates': dates,
+    }
+
+
+    return render(request, 'journal.html',contex)   
+
+
+def taskpage(request):
+    tasks = task.objects.all().order_by('created_date')
+
+    context = {
+        'tasks': tasks,
+    }
+
+
+    return render(request, 'task.html',context) 
+
+
+
+def taskdetail(request, id):
+    data = task.objects.get(id=id)
+
+    context = {
+        'task': data,
+    }
+
+    return render(request, 'taskdetail.html', context)
+
+
+
+def task_create(request):
+    form = task_form()
+
+    if request.method == 'POST':
+        form = task_form(request.POST or None)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(taskpage)
+
+    else:
+        form = task_form()
+
+    context = {
+        'form':form,
+    }
+
+    return render(request, 'foradd.html',context)
+
+
+
+def task_update(request, id):
+    post = get_object_or_404(task, id=id)
+
+    form = task_form(request.POST or None, instance=post)
+
+    if form.is_valid():
+        form.save()
+
+        return redirect(taskpage)
+    
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'foradd.html', context)
+
+
+def task_delete(request, id):
+    post = get_object_or_404(task, id=id)
+
+    post.delete()
+
+    return redirect(taskpage)
+
+
+
+def paypage(request):
+    payments = pay.objects.all()
+
+    context = {
+        'payments': payments,
+    }
+
+    return render(request, 'pay.html', context)
+
+
+
+def pay_create(request):
+    form = pay_form()
+
+    if request.method == 'POST':
+        form = pay_form(request.POST or None)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(paypage)
+        
+    else:
+        form = pay_form()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'foradd.html', context)
+
+
+
+def pay_update(request, id):
+    post = get_object_or_404(pay, id=id)
+
+    form = pay_form(request.POST or None, instance=post)
+
+    if form.is_valid():
+        form.save()
+
+        return redirect(paypage)
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'foradd.html', context)
+
+
+
+def pay_delete(request, id):
+    post = get_object_or_404(pay, id=id)
+
+    post.delete()
+
+    return redirect(paypage)

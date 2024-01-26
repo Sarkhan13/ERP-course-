@@ -29,7 +29,7 @@ class teacher(models.Model):
 
 
 class group(models.Model):
-    teach = models.ForeignKey(teacher,on_delete=models.CASCADE)
+    teach = models.ForeignKey(teacher,on_delete=models.PROTECT)
     name = models.CharField(max_length=100)
     lesson = models.CharField(max_length=100)
     begin_date = models.DateTimeField(verbose_name= 'Qrupun dərsə başlama tarixi')
@@ -55,3 +55,99 @@ class group(models.Model):
     @property
     def get_url(self):
         return reverse('groupdetail', kwargs={'id':self.id})
+
+
+
+class student(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    group = models.ForeignKey(group, on_delete=models.PROTECT,verbose_name='Yazıldığı qrup')
+    name = models.CharField(max_length=100, verbose_name= 'Tələbənin adı')
+    surname = models.CharField(max_length=100, verbose_name = 'soyadı')
+    birthday = models.DateField(verbose_name = 'təvəllüdü')
+    startdate = models.DateTimeField(verbose_name = 'qrupa başlama tarixi')
+    payment = models.IntegerField(verbose_name = 'Aylıq ödəniş(AZN)')
+    profilepic = models.ImageField(verbose_name='profil şəkli')
+
+    created_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now_add = True)
+
+    def __str__(self):
+        return str(self.name)
+    
+
+class date(models.Model): 
+    group = models.ForeignKey(group, on_delete=models.CASCADE, verbose_name='qrupun adı')
+    date_time = models.DateField(verbose_name='tarix')
+
+    created_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now_add = True)
+    
+    def __str__(self):
+        return f'{self.date_time} {self.group.name}' 
+
+
+
+
+class journal(models.Model):
+    date = models.ForeignKey(date, on_delete=models.PROTECT, verbose_name='tarix', blank=True, null=True)
+    student = models.ForeignKey(student, on_delete=models.CASCADE,verbose_name='Tələbə')
+    rate = models.IntegerField(verbose_name='qiymət',blank=True, null=True)
+    existence = models.BooleanField(default = True, verbose_name='davamiyyət')
+
+    created_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now_add = True)
+
+    def __str__(self):
+        return str(self.student.name)
+
+
+
+class task(models.Model):
+    teacher = models.ForeignKey(teacher, on_delete=models.PROTECT, verbose_name='Taskın müəllimi')
+    group = models.ForeignKey(group, on_delete=models.CASCADE,verbose_name='qrup')
+    title = models.CharField(max_length=200, verbose_name='başlıq')
+    text = models.TextField(verbose_name='mətn')
+    deadline = models.DateField(verbose_name='bitmə tarixi')
+    rate = models.IntegerField(verbose_name='qiymət',blank=True, null=True)
+
+    created_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now_add = True)
+
+    def __str__(self):
+        return f'{self.title} {self.group.name}'
+    
+
+    @property
+    def get_url(self):
+        return reverse('task_detail', kwargs={'id':self.id})
+    
+
+
+
+class pay(models.Model):
+    student = models.ForeignKey(student, on_delete=models.PROTECT, blank=True, null=True)
+    monthly_payment = models.IntegerField(verbose_name='aylıq ödəniş',blank=True, null=True)
+    started_date = models.DateField(verbose_name='kursa başlama tarixi',blank=True, null=True)
+    ended_date = models.DateField(verbose_name='kursu bitirəcəyi tarix',blank=True, null=True)
+    note = models.TextField(verbose_name='qeyd',blank=True, null=True)
+    sale = models.IntegerField(verbose_name='endirim', blank=True, null=True)
+
+    created_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now_add = True)
+
+    def __str__(self):
+        return str(self.student.name)
+    
+
+
+class chek(models.Model):
+    paymnt = models.ForeignKey(pay, on_delete = models.CASCADE, verbose_name = 'ödəniş')
+    payment_date = models.DateField(verbose_name= 'ödəməli olduğu son tarix',blank=True, null=True)
+    payed = models.BooleanField(verbose_name= 'ödənildi',default=False,blank=True, null=True)  
+
+    def __str__(self):
+        return f'{self.paymnt.student.name} {self.payment_date}'  
+
+
+
+

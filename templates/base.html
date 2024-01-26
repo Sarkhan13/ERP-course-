@@ -177,22 +177,22 @@
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings">Account Settings</div>
+                <div data-i18n="Account Settings">Tələbə modulu</div>
               </a>
               <ul class="menu-sub">
                 <li class="menu-item">
-                  <a href="pages-account-settings-account.html" class="menu-link">
-                    <div data-i18n="Account">Account</div>
+                  <a href="{% url 'student' %}" class="menu-link">
+                    <div data-i18n="Account">Tələbə bazası</div>
                   </a>
                 </li>
                 <li class="menu-item">
-                  <a href="pages-account-settings-notifications.html" class="menu-link">
-                    <div data-i18n="Notifications">Notifications</div>
+                  <a href="{% url 'journal' %}" class="menu-link">
+                    <div data-i18n="Notifications">Jurnallar bazası</div>
                   </a>
                 </li>
                 <li class="menu-item">
-                  <a href="pages-account-settings-connections.html" class="menu-link">
-                    <div data-i18n="Connections">Connections</div>
+                  <a href="{% url 'task' %}" class="menu-link">
+                    <div data-i18n="Connections">Tasklar bazası</div>
                   </a>
                 </li>
               </ul>
@@ -234,6 +234,24 @@
                 <li class="menu-item">
                   <a href="{% url 'group' %}" class="menu-link">
                     <div data-i18n="Under Maintenance">Qruplar bazası</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                <div data-i18n="Misc">Maliyyə modulu</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'pay' %}" class="menu-link">
+                    <div data-i18n="Error">Ödənişlər alt modulu</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="" class="menu-link">
+                    <div data-i18n="Under Maintenance">Çeklər alt modulu</div>
                   </a>
                 </li>
               </ul>
