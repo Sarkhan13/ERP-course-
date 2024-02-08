@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class teacher(models.Model):
-    teacher = models.ForeignKey(User, on_delete = models.PROTECT)
+    user = models.ForeignKey(User, on_delete = models.PROTECT,default=1)
     name = models.CharField(max_length = 100, verbose_name = 'müəllimin adı')
     surname = models.CharField(max_length = 100, verbose_name = 'müəllimin soyadı')
     salary = models.IntegerField(verbose_name = 'maaş')
@@ -59,7 +59,7 @@ class group(models.Model):
 
 
 class student(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     group = models.ForeignKey(group, on_delete=models.PROTECT,verbose_name='Yazıldığı qrup')
     name = models.CharField(max_length=100, verbose_name= 'Tələbənin adı')
     surname = models.CharField(max_length=100, verbose_name = 'soyadı')
@@ -141,12 +141,19 @@ class pay(models.Model):
 
 
 class chek(models.Model):
-    paymnt = models.ForeignKey(pay, on_delete = models.CASCADE, verbose_name = 'ödəniş')
+    paymnt = models.ForeignKey(pay, on_delete = models.CASCADE, verbose_name = 'ödəniş', related_name='cheks')
     payment_date = models.DateField(verbose_name= 'ödəməli olduğu son tarix',blank=True, null=True)
-    payed = models.BooleanField(verbose_name= 'ödənildi',default=False,blank=True, null=True)  
+    payed = models.BooleanField(verbose_name= 'ödənildi',default=False,blank=True, null=True) 
+
+    created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+    updated_date = models.DateTimeField(auto_now_add = True,blank=True, null=True) 
 
     def __str__(self):
-        return f'{self.paymnt.student.name} {self.payment_date}'  
+        return f'{self.paymnt.student.name} {self.payment_date}' 
+
+    @property
+    def get_url(self):
+        return reverse('chek_update', kwargs={'id':self.id}) 
 
 
 

@@ -28,5 +28,8 @@ urlpatterns = [
     path('payment/create',pay_create, name='pay_create'),
     path('pay/<int:id>/update', pay_update, name='pay_update'),
     path('pay/<int:id>/delete', pay_delete, name='pay_delete'),
+    path('chek/', checks, name='checks'),
+    path('chek/<int:id>/update', chek_update, name='chek_update'),
+    path('chek/create',check_for, name='chek_create'),
     
 ]

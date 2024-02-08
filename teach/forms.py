@@ -1,5 +1,5 @@
 from django import forms
-from .models import teacher,group,student,task,pay
+from .models import teacher,group,student,task,pay,chek
 
 
 class teacher_form(forms.ModelForm):
@@ -21,7 +21,7 @@ class student_form(forms.ModelForm):
     class Meta:
         model = student
 
-        fields = ('user', 'group', 'name', 'surname','birthday', 'startdate', 'payment', 'profilepic')
+        fields = ( 'group', 'name', 'surname','birthday', 'startdate', 'payment', 'profilepic')
 
 
 
@@ -38,3 +38,13 @@ class pay_form(forms.ModelForm):
         model = pay
 
         fields = ('student','monthly_payment','started_date','ended_date','note','sale')
+
+
+
+class check_form(forms.ModelForm):
+    class Meta:
+        model = chek
+
+        fields = ('payed',)
+
+

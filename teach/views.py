@@ -3,13 +3,15 @@ from .models import *
 # from django.db.models import Count
 from .forms import *
 from django.contrib.auth.models import User
-# from .tasks import test_func
+from datetime import datetime, timedelta
+from django.utils import timezone
+import time
+from .tasks import chek_create
 
 
 
-# def test(request):
-#     test_func.delay()
-#     return HttpResponse("Done")
+
+
 
 def teachers(request):
     teachers = teacher.objects.all()
@@ -82,7 +84,11 @@ def teacher_add(request):
 
         if form.is_valid():
             post = form.save(commit=False)
-            post.teacher = User.objects.get(id=1)
+            usern = f'{post.name}12'
+            new_user = User(username=usern)
+            new_user.set_password('Admin12!')
+            new_user.save()
+            post.user = new_user
             post.save()
 
             return redirect(post.get_url)
@@ -194,7 +200,17 @@ def student_create(request):
         form = student_form(request.POST or None,request.FILES or None)
 
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)
+            
+            usern = f'{post.name}123'
+            
+            new_user = User(username=usern)
+            new_user.set_password('Admin123!')
+            new_user.save()
+            
+            post.user = new_user
+            post.save()            
+
 
             return redirect(studentpage)
         
@@ -387,3 +403,56 @@ def pay_delete(request, id):
     post.delete()
 
     return redirect(paypage)
+
+                      
+    
+
+def checks(request):
+    
+    all_cheks = chek.objects.all().order_by('payed')
+
+    context = {
+       'cheks': all_cheks,
+    }
+
+    return render(request, 'checks.html', context)
+
+
+def check_for(request):
+    chek_create()
+    
+    return render(request,'checks.html')
+
+
+
+def chek_update(request,id):
+    post = get_object_or_404(chek, id=id)
+
+    form = check_form(request.POST or None, instance=post)
+
+    if form.is_valid():
+        form.save()
+
+        return redirect(checks)
+    
+    context = {
+       'form': form, 
+    }
+
+    return render(request, 'foradd.html',context)
+
+
+
+
+
+
+
+
+
+    
+
+
+        
+
+    
+
