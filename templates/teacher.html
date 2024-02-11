@@ -21,8 +21,9 @@
 
             <div class="container-xxl flex-grow-1 container-p-y">
               <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Müəllimlər Modulu /</span> Müəllimlər Cədvəli</h4>
+              {% if request.user.is_superuser %}
               <a href="{% url 'teacher_add' %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Müəllim əlavə et</button></a>
-
+              {% endif %}
               <!-- Basic Bootstrap Table -->
               <div class="card">
                 <h5 class="card-header">Müəllimlər</h5>

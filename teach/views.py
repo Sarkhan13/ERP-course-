@@ -431,105 +431,115 @@ def task_delete(request, id):
 
 
 def paypage(request):
-    if request.user.is_superuser:
-        payments = pay.objects.all()
+    if not request.user.is_staff:
+        raise Http404
+    
+    payments = pay.objects.all()
 
-        context = {
+    context = {
             'payments': payments,
         }
 
-        return render(request, 'pay.html', context)
+    return render(request, 'pay.html', context)
 
 
 
 def pay_create(request):
-    if request.user.is_superuser:
-        form = pay_form()
+    if not request.user.is_staff:
+        raise Http404
+    
+    form = pay_form()
 
-        if request.method == 'POST':
-            form = pay_form(request.POST or None)
-
-            if form.is_valid():
-                form.save()
-
-                return redirect(paypage)
-            
-        else:
-            form = pay_form()
-
-        context = {
-            'form': form,
-        }
-
-        return render(request, 'foradd.html', context)
-
-
-
-def pay_update(request, id):
-    if request.user.is_superuser:
-        post = get_object_or_404(pay, id=id)
-
-        form = pay_form(request.POST or None, instance=post)
+    if request.method == 'POST':
+        form = pay_form(request.POST or None)
 
         if form.is_valid():
             form.save()
 
             return redirect(paypage)
+            
+    else:
+        form = pay_form()
 
-        context = {
+    context = {
             'form': form,
         }
 
-        return render(request, 'foradd.html', context)
+    return render(request, 'foradd.html', context)
+
+
+
+def pay_update(request, id):
+    if not request.user.is_staff:
+        raise Http404
+    post = get_object_or_404(pay, id=id)
+
+    form = pay_form(request.POST or None, instance=post)
+
+    if form.is_valid():
+        form.save()
+
+        return redirect(paypage)
+
+    context = {
+            'form': form,
+        }
+
+    return render(request, 'foradd.html', context)
 
 
 
 def pay_delete(request, id):
-    if request.user.is_superuser:
-        post = get_object_or_404(pay, id=id)
+    if not request.user.is_staff:
+        raise Http404
+    
+    post = get_object_or_404(pay, id=id)
 
-        post.delete()
+    post.delete()
 
-        return redirect(paypage)
+    return redirect(paypage)
 
                       
     
 
 def checks(request):
-    if request.user.is_superuser:
-        all_cheks = chek.objects.all().order_by('payed')
+    if not request.user.is_staff:
+        raise Http404
+    all_cheks = chek.objects.all().order_by('payed')
 
-        context = {
+    context = {
         'cheks': all_cheks,
         }
 
-        return render(request, 'checks.html', context)
+    return render(request, 'checks.html', context)
 
 
 def check_for(request):
-    if request.user.is_superuser:
-        chek_create()
+    if not request.user.is_staff:
+        raise Http404
+    chek_create()
         
-        return render(request,'checks.html')
+    return render(request,'checks.html')
 
 
 
 def chek_update(request,id):
-    if request.user.is_superuser:
-        post = get_object_or_404(chek, id=id)
+    if not request.user.is_staff:
+        raise Http404
+    post = get_object_or_404(chek, id=id)
 
-        form = check_form(request.POST or None, instance=post)
+    form = check_form(request.POST or None, instance=post)
 
-        if form.is_valid():
-            form.save()
+    if form.is_valid():
+        form.save()
 
-            return redirect(checks)
+        return redirect(checks)
         
-        context = {
+    context = {
         'form': form, 
         }
 
-        return render(request, 'foradd.html',context)
+    return render(request, 'foradd.html',context)
 
 
 

@@ -8,8 +8,9 @@
 
             <div class="container-xxl flex-grow-1 container-p-y">
               <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Müəllimlər Modulu /</span> Qruplar</h4>
+              {% if request.user.is_superuser %}
               <a href="{% url 'group_add' %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Qrup əlavə et</button></a>
-
+              {% endif %}
               <!-- Examples -->
               <div class="row mb-5">
                 {% for group in groups %}
