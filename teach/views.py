@@ -1,14 +1,9 @@
-from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
+from django.shortcuts import render,redirect,get_object_or_404
+from django.http import Http404
 from .models import *
-# from django.db.models import Count
 from .forms import *
 from django.contrib.auth.models import User
-from datetime import datetime, timedelta
-from django.utils import timezone
-import time
 from .tasks import chek_create
-
-
 
 
 
@@ -16,23 +11,33 @@ from .tasks import chek_create
 def teachers(request):
     teachers = teacher.objects.all()
 
+    for teac in teachers:
 
-    contex = {
-        'teachers':teachers,
+        if not request.user.is_staff and request.user != teac.user:
+            raise Http404
         
-    }
+        contex = {
+                'teachers':teachers,
+            }
 
-    return render(request, 'teacher.html',contex)
+        return render(request, 'teacher.html',contex)
+
 
 
 def teacher_detail(request, id):
     teach = teacher.objects.get(id=id)
 
-    contex  = {
-        'teach': teach,
-    }
+    if request.user.is_staff or request.user == teach.user:
 
-    return render(request, 'teachdetail.html', contex)
+        contex  = {
+            'teach': teach,
+        }
+
+        return render(request, 'teachdetail.html', contex)
+    else:
+        raise Http404
+
+
 
 def valid_query(query):
     return query !="" and query is not None
@@ -44,7 +49,6 @@ def searching(request):
     if valid_query(searchdata):
         teachers = teacher.objects.filter(name__contains = searchdata)
 
-
     contex = {
         'teachers':teachers,
         'searchdata': searchdata,
@@ -53,30 +57,42 @@ def searching(request):
     return render(request, 'result.html', contex)
 
 
+
 def grouppage(request):
     groups = group.objects.all()
 
-    contex = {
-        'groups': groups,
-    }
+    for grup in groups:
 
-    return render(request, 'groups.html',contex)
+        if not request.user.is_staff and request.user != grup.teach.user:
+            raise Http404
+            
+        contex = {
+                'groups': groups,
+            }
+
+        return render(request, 'groups.html',contex)
 
 
 
 def groupdetail(request, id):
-    groups = group.objects.get(id=id)
+    groups= get_object_or_404(group, id=id)
 
-    contex = {
-        'group':groups,
-    }
+    if request.user.is_staff or request.user == groups.teach.user:
+    
+        contex = {
+            'group':groups,
+            }
 
-
-    return render(request, 'groupdetail.html', contex)
+        return render(request, 'groupdetail.html', contex)
+    else:
+        raise Http404
 
 
 
 def teacher_add(request):
+    if not request.user.is_staff:
+        raise Http404
+        
     form = teacher_form()
 
     if request.method == 'POST':
@@ -97,14 +113,17 @@ def teacher_add(request):
         form = teacher_form()
 
     contex = {
-        'form': form,
-    } 
+            'form': form,
+        } 
 
 
     return render(request, 'foradd.html',contex)
 
 
 def teacher_update(request, id):
+    if not request.user.is_staff:
+        raise Http404
+    
     post = get_object_or_404(teacher, id=id)
 
     form = teacher_form(request.POST or None,request.FILES or None,instance=post)
@@ -115,13 +134,16 @@ def teacher_update(request, id):
         return redirect(post.get_url)
 
     contex = {
-        'form': form,
-    } 
+            'form': form,
+        } 
 
     return render(request, 'foradd.html',contex)
 
 
 def teacher_delete(request, id):
+    if not request.user.is_staff:
+        raise Http404
+    
     post = get_object_or_404(teacher, id=id)
 
     post.delete()
@@ -131,6 +153,9 @@ def teacher_delete(request, id):
 
 
 def group_add(request):
+    if not request.user.is_staff:
+        raise Http404
+    
     form = group_form()
 
     if request.method == 'POST':
@@ -145,8 +170,8 @@ def group_add(request):
         form = group_form()
 
     contex = {
-        'form': form,
-    } 
+            'form': form,
+        } 
 
 
     return render(request, 'foradd.html',contex)
@@ -154,6 +179,9 @@ def group_add(request):
 
 
 def group_update(request, id):
+    if not request.user.is_staff:
+        raise Http404
+    
     post = get_object_or_404(group, id=id)
 
     form = group_form(request.POST or None,instance=post)
@@ -164,8 +192,8 @@ def group_update(request, id):
         return redirect(post.get_url)
 
     contex = {
-        'form': form,
-    } 
+            'form': form,
+        } 
 
 
     return render(request, 'foradd.html',contex)    
@@ -173,6 +201,9 @@ def group_update(request, id):
 
 
 def group_delete(request,id):
+    if not request.user.is_staff:
+        raise Http404
+    
     post = get_object_or_404(group, id=id)
 
     post.delete()
@@ -184,9 +215,15 @@ def group_delete(request,id):
 def studentpage(request):
     students = student.objects.all()
 
+    for stud in students:
+
+        if not request.user.is_staff and request.user != stud.user:
+            raise Http404
+        
+
     contex = {
-        'students': students
-    }
+            'students': students,
+        }
 
 
     return render(request, 'student.html', contex)
@@ -194,6 +231,9 @@ def studentpage(request):
 
 
 def student_create(request):
+    if not request.user.is_staff:
+        raise Http404
+    
     form = student_form()
 
     if request.method == 'POST':
@@ -201,25 +241,25 @@ def student_create(request):
 
         if form.is_valid():
             post = form.save(commit=False)
-            
+                
             usern = f'{post.name}123'
-            
+                
             new_user = User(username=usern)
             new_user.set_password('Admin123!')
             new_user.save()
-            
+                
             post.user = new_user
             post.save()            
 
 
             return redirect(studentpage)
-        
+            
     else:
         form = student_form()
 
     contex = {
-        'form': form,
-    } 
+            'form': form,
+        } 
 
 
     return render(request, 'foradd.html',contex)
@@ -227,6 +267,9 @@ def student_create(request):
 
 
 def student_update(request,id):
+    if not request.user.is_staff:
+        raise Http404
+    
     post = get_object_or_404(student, id=id)
 
     form = student_form(request.POST or None,request.FILES or None,instance=post)
@@ -235,11 +278,11 @@ def student_update(request,id):
         form.save()
 
         return redirect(studentpage)
-    
+        
 
     contex = {
-        'form': form,
-    } 
+            'form': form,
+        } 
 
 
     return render(request, 'foradd.html',contex)
@@ -247,6 +290,9 @@ def student_update(request,id):
 
 
 def student_delete(request,id):
+    if not request.user.is_staff:
+        raise Http404
+    
     post = get_object_or_404(student, id=id)
 
     post.delete()
@@ -256,6 +302,7 @@ def student_delete(request,id):
 
 
 def journalpage(request):
+    
     groups = group.objects.all()
 
     students = student.objects.all()
@@ -264,47 +311,72 @@ def journalpage(request):
 
     dates = date.objects.all().order_by('date_time')
 
-    contex = {
-        'groups': groups,
-        'students': students,
-        'journals': journals,
-        'dates': dates,
-    }
+    for jour in journals:
+        if not request.user.is_staff and jour.student.group.teach.user != request.user: 
+            raise Http404
 
 
-    return render(request, 'journal.html',contex)   
+        contex = {
+            'groups': groups,
+            'students': students,
+            'journals': journals,
+            'dates': dates,
+        }
+
+
+        return render(request, 'journal.html',contex)   
 
 
 def taskpage(request):
+    
     tasks = task.objects.all().order_by('created_date')
 
-    context = {
-        'tasks': tasks,
-    }
+    for tas in tasks:
+        if not request.user.is_staff and tas.teacher.user != request.user: 
+            raise Http404
+
+        context = {
+            'tasks': tasks,
+        }
 
 
-    return render(request, 'task.html',context) 
+        return render(request, 'task.html',context) 
 
 
 
 def taskdetail(request, id):
+    
     data = task.objects.get(id=id)
 
-    context = {
-        'task': data,
-    }
+    studs = data.group.student_set.all()
 
-    return render(request, 'taskdetail.html', context)
+    for stud in studs:
+
+        if request.user.is_staff or request.user == data.teacher.user or request.user == stud.user:
+
+            context = {
+                'task': data,
+            }
+
+            return render(request, 'taskdetail.html', context)
+        else:
+            raise Http404
 
 
 
 def task_create(request):
+    teachs = request.user.teacher_user.first()
+    
+    if not request.user.is_staff and not teachs:
+        raise Http404
+        
     form = task_form()
 
     if request.method == 'POST':
         form = task_form(request.POST or None)
 
         if form.is_valid():
+            
             form.save()
 
             return redirect(taskpage)
@@ -313,15 +385,21 @@ def task_create(request):
         form = task_form()
 
     context = {
-        'form':form,
-    }
+            'form':form,
+        }
 
     return render(request, 'foradd.html',context)
 
 
 
 def task_update(request, id):
+    teachs = request.user.teacher_user.first()
+
     post = get_object_or_404(task, id=id)
+    
+    if not request.user.is_staff and not teachs and not post.teacher.user:
+        raise Http404
+    
 
     form = task_form(request.POST or None, instance=post)
 
@@ -329,16 +407,22 @@ def task_update(request, id):
         form.save()
 
         return redirect(taskpage)
-    
+        
     context = {
-        'form': form,
-    }
+            'form': form,
+        }
 
     return render(request, 'foradd.html', context)
 
 
 def task_delete(request, id):
+    teachs = request.user.teacher_user.first()
+
     post = get_object_or_404(task, id=id)
+    
+    if not request.user.is_staff and not teachs and not post.teacher.user:
+        raise Http404
+
 
     post.delete()
 
@@ -347,99 +431,105 @@ def task_delete(request, id):
 
 
 def paypage(request):
-    payments = pay.objects.all()
+    if request.user.is_superuser:
+        payments = pay.objects.all()
 
-    context = {
-        'payments': payments,
-    }
+        context = {
+            'payments': payments,
+        }
 
-    return render(request, 'pay.html', context)
+        return render(request, 'pay.html', context)
 
 
 
 def pay_create(request):
-    form = pay_form()
+    if request.user.is_superuser:
+        form = pay_form()
 
-    if request.method == 'POST':
-        form = pay_form(request.POST or None)
+        if request.method == 'POST':
+            form = pay_form(request.POST or None)
+
+            if form.is_valid():
+                form.save()
+
+                return redirect(paypage)
+            
+        else:
+            form = pay_form()
+
+        context = {
+            'form': form,
+        }
+
+        return render(request, 'foradd.html', context)
+
+
+
+def pay_update(request, id):
+    if request.user.is_superuser:
+        post = get_object_or_404(pay, id=id)
+
+        form = pay_form(request.POST or None, instance=post)
 
         if form.is_valid():
             form.save()
 
             return redirect(paypage)
-        
-    else:
-        form = pay_form()
 
-    context = {
-        'form': form,
-    }
+        context = {
+            'form': form,
+        }
 
-    return render(request, 'foradd.html', context)
-
-
-
-def pay_update(request, id):
-    post = get_object_or_404(pay, id=id)
-
-    form = pay_form(request.POST or None, instance=post)
-
-    if form.is_valid():
-        form.save()
-
-        return redirect(paypage)
-
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'foradd.html', context)
+        return render(request, 'foradd.html', context)
 
 
 
 def pay_delete(request, id):
-    post = get_object_or_404(pay, id=id)
+    if request.user.is_superuser:
+        post = get_object_or_404(pay, id=id)
 
-    post.delete()
+        post.delete()
 
-    return redirect(paypage)
+        return redirect(paypage)
 
                       
     
 
 def checks(request):
-    
-    all_cheks = chek.objects.all().order_by('payed')
+    if request.user.is_superuser:
+        all_cheks = chek.objects.all().order_by('payed')
 
-    context = {
-       'cheks': all_cheks,
-    }
+        context = {
+        'cheks': all_cheks,
+        }
 
-    return render(request, 'checks.html', context)
+        return render(request, 'checks.html', context)
 
 
 def check_for(request):
-    chek_create()
-    
-    return render(request,'checks.html')
+    if request.user.is_superuser:
+        chek_create()
+        
+        return render(request,'checks.html')
 
 
 
 def chek_update(request,id):
-    post = get_object_or_404(chek, id=id)
+    if request.user.is_superuser:
+        post = get_object_or_404(chek, id=id)
 
-    form = check_form(request.POST or None, instance=post)
+        form = check_form(request.POST or None, instance=post)
 
-    if form.is_valid():
-        form.save()
+        if form.is_valid():
+            form.save()
 
-        return redirect(checks)
-    
-    context = {
-       'form': form, 
-    }
+            return redirect(checks)
+        
+        context = {
+        'form': form, 
+        }
 
-    return render(request, 'foradd.html',context)
+        return render(request, 'foradd.html',context)
 
 
 

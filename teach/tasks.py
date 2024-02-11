@@ -10,7 +10,7 @@ from .models import chek,pay
 def chek_create():
     today = timezone.now()
     
-    pay_day = today - timedelta(days=3)
+    pay_day = today - timedelta(days=12)
     
     pays =pay.objects.all()
 

@@ -9,8 +9,9 @@
 
             <div class="container-xxl flex-grow-1 container-p-y">
               <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Taskın detalları </span></h4>
+              {% if request.user.is_staff or request.user.teacher_user.first %}
               <a href="{% url 'task_create' %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Task əlavə et</button></a>
-
+              {% endif %}
               <div class="row">
                 <div class="col-md-12">
                   
@@ -25,9 +26,10 @@
                          <p class="text-muted mb-0">Taskı yerləşdirən müəllim:  <strong style="color: rgb(86, 86, 236);font-size: 18px;"> {{ task.teacher.name }}</strong></p><br>
                          <p class="text-muted mb-0">Məzmunu:  <strong> {{ task.text }} </strong></p><br>
                           <p class="text-muted mb-0">Taskın bitmə müddəti:    </p> <p style="color: rgb(86, 86, 236);"><strong>{{ task.deadline }}</strong></p>
-                          
+                          {% if request.user.is_staff or request.user.teacher_user.first %}
                           <a href="{% url 'task_delete' task.id %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Taskı sil</button></a>
                           <a href="{% url 'task_update' task.id %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Taskı update et</button></a>
+                          {% endif %}
                         </div>
                       </div>
                     </div>

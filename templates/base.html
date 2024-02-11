@@ -14,7 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+    <title>{{ request.user }}</title>
 
     <meta name="description" content="" />
 
@@ -136,7 +136,7 @@
             </li>
 
             <!-- Layouts -->
-            <li class="menu-item">
+            <!-- <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="Layouts">Layouts</div>
@@ -169,22 +169,26 @@
                   </a>
                 </li>
               </ul>
-            </li>
+            </li> -->
 
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Pages</span>
             </li>
+            {% if request.user.is_staff or request.user.teacher_user.first %}
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
                 <div data-i18n="Account Settings">Tələbə modulu</div>
               </a>
+              
               <ul class="menu-sub">
+                {% if request.user.is_staff %}
                 <li class="menu-item">
                   <a href="{% url 'student' %}" class="menu-link">
                     <div data-i18n="Account">Tələbə bazası</div>
                   </a>
                 </li>
+                {% endif %}
                 <li class="menu-item">
                   <a href="{% url 'journal' %}" class="menu-link">
                     <div data-i18n="Notifications">Jurnallar bazası</div>
@@ -196,30 +200,32 @@
                   </a>
                 </li>
               </ul>
+              
             </li>
+            {% endif %}
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
                 <div data-i18n="Authentications">Authentications</div>
               </a>
               <ul class="menu-sub">
+                {% if not request.user.is_authenticated %}
                 <li class="menu-item">
-                  <a href="{% url 'login' %}" class="menu-link" target="_blank">
+                  <a href="{% url 'login' %}" class="menu-link">
                     <div data-i18n="Basic">Login</div>
                   </a>
                 </li>
+                {% endif %}
                 <li class="menu-item">
-                  <a href="auth-register-basic.html" class="menu-link" target="_blank">
-                    <div data-i18n="Basic">Register</div>
+                  <a href="{% url 'logout' %}" class="menu-link">
+                    <div data-i18n="Basic">Logout</div>
                   </a>
                 </li>
-                <li class="menu-item">
-                  <a href="auth-forgot-password-basic.html" class="menu-link" target="_blank">
-                    <div data-i18n="Basic">Forgot Password</div>
-                  </a>
-                </li>
+                
               </ul>
             </li>
+            
+            {% if request.user.is_staff or request.user.teacher_user.first %}
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-cube-alt"></i>
@@ -238,6 +244,9 @@
                 </li>
               </ul>
             </li>
+            {% endif %}
+            
+            {% if request.user.is_staff %}
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-cube-alt"></i>
@@ -256,6 +265,7 @@
                 </li>
               </ul>
             </li>
+            {% endif %}
             <!-- Components -->
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
             <!-- Cards -->

@@ -24,10 +24,10 @@
                           <p class="text-muted mb-0">Qrupun tələbələri:   </p>{% for s in group.student_set.all%} <p style="color: rgb(86, 86, 236);"><strong>{{ s.name }} {{s.surname}}</strong></p>{% endfor %}
                           <p class="text-muted mb-0">Qrupun taskları:   </p>{% for t in group.task_set.all %}<p style="color: rgb(16, 16, 19);"><strong>{{ t.title }}</strong></p>{% endfor %}
 
-
+                          {% if request.user.is_staff %}
                           <a href="{% url 'group_delete' group.id %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Qrupu sil</button></a>
                           <a href="{% url 'group_update' group.id %}"><button class="btn btn-primary" type="submit" style="margin-bottom: 20px;">Qrupu update et</button></a>
-                          
+                          {% endif %}
                         </div>
                       </div>
                     </div>

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class teacher(models.Model):
-    user = models.ForeignKey(User, on_delete = models.PROTECT,default=1)
+    user = models.ForeignKey(User,related_name='teacher_user', on_delete = models.PROTECT,default=1)
     name = models.CharField(max_length = 100, verbose_name = 'müəllimin adı')
     surname = models.CharField(max_length = 100, verbose_name = 'müəllimin soyadı')
     salary = models.IntegerField(verbose_name = 'maaş')
@@ -55,11 +55,12 @@ class group(models.Model):
     @property
     def get_url(self):
         return reverse('groupdetail', kwargs={'id':self.id})
+    
 
 
 
 class student(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User,related_name='student_user', on_delete=models.CASCADE, default=1)
     group = models.ForeignKey(group, on_delete=models.PROTECT,verbose_name='Yazıldığı qrup')
     name = models.CharField(max_length=100, verbose_name= 'Tələbənin adı')
     surname = models.CharField(max_length=100, verbose_name = 'soyadı')
@@ -74,6 +75,12 @@ class student(models.Model):
     def __str__(self):
         return str(self.name)
     
+    @property
+    def get_url(self):
+        return reverse('stud_panel', kwargs={'id':self.id})
+    
+
+
 
 class date(models.Model): 
     group = models.ForeignKey(group, on_delete=models.CASCADE, verbose_name='qrupun adı')
