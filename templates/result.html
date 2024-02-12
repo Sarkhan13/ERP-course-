@@ -11,6 +11,7 @@
 
               <!-- Examples -->
               <div class="row mb-5">
+              {% if teachers %}
                 {% for teacher in teachers %}
                 <div class="col-md-6 col-lg-4 mb-3">
                   <div class="card h-100">
@@ -27,6 +28,27 @@
                   </div>
                 </div>
                 {% endfor %}
+                {% endif %}
+
+                {% if pays %}
+                {% for pay in pays %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ pay.student.name }} {{ pay.student.surname }}</h5>
+                      
+                    </div>
+                    
+                    <div class="card-body">
+                      <span>Aylıq ödəniş:   </span><p class="card-text"><strong>{{ pay.monthly_payment }} AZN</strong></p>
+                      <span>Başlama tarixi:   </span> <p class="card-text">{{ pay.started_date }}</p>
+                      
+                      
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+                {% endif %}
                
               </div>
               </div>

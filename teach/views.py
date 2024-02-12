@@ -45,12 +45,17 @@ def valid_query(query):
 def searching(request):
     searchdata = request.GET['query']
     teachers = teacher.objects.all()
+    pays = pay.objects.all()
 
     if valid_query(searchdata):
         teachers = teacher.objects.filter(name__contains = searchdata)
 
+    if valid_query(searchdata):
+        pays = pay.objects.filter(student__name__icontains =searchdata)
+
     contex = {
         'teachers':teachers,
+        'pays': pays,
         'searchdata': searchdata,
     }
 

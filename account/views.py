@@ -65,6 +65,9 @@ def student_panel(request,id):
     
 
 
+def analys_page(request):
+    pass
+
 
 
 
