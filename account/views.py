@@ -6,6 +6,11 @@ from teach.views import studentpage,teachers
 from teach.models import student,chek,journal
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.http import Http404
+from django .utils import timezone
+from django.db.models import Q
+from datetime import timedelta
+
 
 
 
@@ -27,7 +32,10 @@ def loginpage(request):
                             
                         return redirect(stud.get_url)
                 
-                return redirect(teachers)    
+                return redirect(teachers)
+
+            else:
+                messages.error(request, 'Username və ya şifr yanlışdır!')    
                 
                 
     context = {
@@ -66,7 +74,53 @@ def student_panel(request,id):
 
 
 def analys_page(request):
-    pass
+    if not request.user.is_superuser:
+        raise Http404
+    
+    students = student.objects.all()
+
+    today = timezone.now()
+
+    last_month = today - timedelta(days=30)
+
+    other_tm = today - timedelta(days=0)
+
+    jours = journal.objects.filter(Q(date__date_time=today) & Q(existence=True))
+
+    jour = journal.objects.filter(Q(date__date_time=today) & Q(existence=False))
+
+    checks = chek.objects.all()
+
+    profit = 0
+
+    for check in checks:
+        if check.payed == True:
+            profit += check.paymnt.monthly_payment 
+
+    lastmonth = 0
+
+    fies = chek.objects.filter(Q(created_date__gte=last_month) & Q(created_date__lte=other_tm) & Q(payed=True))
+
+    if fies:
+        for fi in fies:
+            lastmonth += fi.paymnt.monthly_payment  
+
+    
+    context = {
+        'students': students,
+        'jours':jours,
+        'jour': jour,
+        'profit':profit,
+        'lastmonth': lastmonth,
+       
+    }
+
+    return render(request, 'index.html',context)
+
+
+
+
+
 
 
 

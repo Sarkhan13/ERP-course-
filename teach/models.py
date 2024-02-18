@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.db.models import F 
 
 
 class teacher(models.Model):
@@ -11,12 +12,12 @@ class teacher(models.Model):
     profession = models.CharField(max_length=100, verbose_name = 'ixtisas')
     workpractice = models.TextField(verbose_name = 'iş təcrubəsi')
     profilepic = models.ImageField(verbose_name='profil şəkli', upload_to='profilepic/')
-    techerid = models.IntegerField( verbose_name = 'Müəllim İD-si')
-    birth = models.DateTimeField(verbose_name='dogum tarixi', blank=True,null= True)
+    teacher_id = models.IntegerField(verbose_name = 'Müəllim İD',default = 1006)
+    birth = models.DateField(verbose_name='dogum tarixi', blank=True,null= True)
     start = models.DateTimeField(verbose_name= 'bashlama tarixi', blank=True,null= True)
 
     created_date = models.DateTimeField(auto_now_add = True)
-    updated_date = models.DateTimeField(auto_now_add  = True)
+    updated_date = models.DateTimeField(auto_now  = True)
     
 
     def __str__(self):
@@ -25,6 +26,9 @@ class teacher(models.Model):
     @property
     def get_url(self):
         return reverse('teachdetail', kwargs={'id':self.id})
+    
+    
+
     
 
 
@@ -46,7 +50,7 @@ class group(models.Model):
     end_date = models.DateTimeField(verbose_name= 'Qrupun bitmə tarixi')
 
     created_date = models.DateTimeField(auto_now_add = True)
-    updated_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now = True)
 
     def __str__(self):
         return str(self.name)
@@ -70,7 +74,7 @@ class student(models.Model):
     profilepic = models.ImageField(verbose_name='profil şəkli')
 
     created_date = models.DateTimeField(auto_now_add = True)
-    updated_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now = True)
 
     def __str__(self):
         return str(self.name)
@@ -87,7 +91,7 @@ class date(models.Model):
     date_time = models.DateField(verbose_name='tarix')
 
     created_date = models.DateTimeField(auto_now_add = True)
-    updated_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now = True)
     
     def __str__(self):
         return f'{self.date_time} {self.group.name}' 
@@ -102,7 +106,7 @@ class journal(models.Model):
     existence = models.BooleanField(default = True, verbose_name='davamiyyət')
 
     created_date = models.DateTimeField(auto_now_add = True)
-    updated_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now = True)
 
     def __str__(self):
         return str(self.student.name)
@@ -118,7 +122,7 @@ class task(models.Model):
     rate = models.IntegerField(verbose_name='qiymət',blank=True, null=True)
 
     created_date = models.DateTimeField(auto_now_add = True)
-    updated_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now = True)
 
     def __str__(self):
         return f'{self.title} {self.group.name}'
@@ -140,7 +144,7 @@ class pay(models.Model):
     sale = models.IntegerField(verbose_name='endirim', blank=True, null=True)
 
     created_date = models.DateTimeField(auto_now_add = True)
-    updated_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now = True)
 
     def __str__(self):
         return str(self.student.name)
@@ -153,7 +157,7 @@ class chek(models.Model):
     payed = models.BooleanField(verbose_name= 'ödənildi',default=False,blank=True, null=True) 
 
     created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
-    updated_date = models.DateTimeField(auto_now_add = True,blank=True, null=True) 
+    updated_date = models.DateTimeField(auto_now = True,blank=True, null=True) 
 
     def __str__(self):
         return f'{self.paymnt.student.name} {self.payment_date}' 
@@ -164,4 +168,13 @@ class chek(models.Model):
 
 
 
+class month_statistic(models.Model):
+    student_count = models.IntegerField(verbose_name = 'tələbə sayı')
+    month = models.DateField(verbose_name = 'Ay')
+
+    created_date = models.DateTimeField(auto_now_add = True)
+    updated_date = models.DateTimeField(auto_now = True)
+
+    def __str__(self):
+        return str(self.month)
 

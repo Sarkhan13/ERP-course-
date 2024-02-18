@@ -6,7 +6,7 @@ class teacher_form(forms.ModelForm):
     class Meta:
         model = teacher
 
-        fields = ('name', 'surname','salary','profession','workpractice','profilepic','techerid','birth','start')
+        fields = ('name', 'surname','salary','profession','workpractice','profilepic','teacher_id','birth','start')
 
 class group_form(forms.ModelForm):
     class Meta:

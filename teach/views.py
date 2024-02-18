@@ -1,9 +1,11 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.http import Http404
 from .models import *
 from .forms import *
 from django.contrib.auth.models import User
 from .tasks import chek_create
+from django.db.models import F 
+
 
 
 
@@ -110,6 +112,7 @@ def teacher_add(request):
             new_user.set_password('Admin12!')
             new_user.save()
             post.user = new_user
+            
             post.save()
 
             return redirect(post.get_url)
@@ -510,7 +513,8 @@ def pay_delete(request, id):
 def checks(request):
     if not request.user.is_staff:
         raise Http404
-    all_cheks = chek.objects.all().order_by('payed')
+    
+    all_cheks = chek.objects.all().order_by('payed').order_by('-created_date')
 
     context = {
         'cheks': all_cheks,
@@ -524,7 +528,7 @@ def check_for(request):
         raise Http404
     chek_create()
         
-    return render(request,'checks.html')
+    return HttpResponse('Əməliyyat uğurla həyata keçdi!')
 
 
 

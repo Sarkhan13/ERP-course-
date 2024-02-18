@@ -46,10 +46,13 @@
 
     <!-- Helpers -->
     <script src="{% static '/assets/vendor/js/helpers.js' %}"></script>
+    
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{% static '/assets/js/config.js' %}"></script>
+    
+
   </head>
 
   <body>
@@ -60,7 +63,8 @@
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
+            {% if request.user.is_superuser %}
+            <a href="{% url 'group' %}" class="app-brand-link">
               <span class="app-brand-logo demo">
                 <svg
                   width="25"
@@ -118,6 +122,7 @@
               </span>
               <span class="app-brand-text demo menu-text fw-bolder ms-2">Sneat</span>
             </a>
+            {% endif %}
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
               <i class="bx bx-chevron-left bx-sm align-middle"></i>
@@ -130,7 +135,7 @@
             <!-- Dashboard -->
             {% if request.user.is_superuser %}
             <li class="menu-item active">
-              <a href="index.html" class="menu-link">
+              <a href="{% url 'analys' %}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
@@ -393,14 +398,8 @@
   </div>
   <!-- / Layout wrapper -->
 
-  <div class="buy-now">
-    <a
-      href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-      target="_blank"
-      class="btn btn-danger btn-buy-now"
-      >Upgrade to Pro</a
-    >
-  </div>
+  
+ 
 
   <!-- Core JS -->
   <!-- build:js assets/vendor/js/core.js -->
