@@ -1,8 +1,8 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate,logout
 from .forms import login_form
-from teach.views import studentpage,teachers
+from teach.views import teachers,paypage
 from teach.models import student,chek,journal
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
@@ -10,6 +10,14 @@ from django.http import Http404
 from django .utils import timezone
 from django.db.models import Q
 from datetime import timedelta
+from teach.tasks2 import for_chart
+
+
+
+
+def for_chart_func(request):
+    for_chart()
+    return HttpResponse('successfully!')
 
 
 
@@ -27,13 +35,13 @@ def loginpage(request):
             if user:
                 login(request, user)
 
-                if user.student_user.all() != "":
-                    for stud in user.student_user.all():
+                if request.user.is_superuser:
+                    return redirect(analys_page)
+
+                elif request.user.student_user.all() != "":
+                    for stud in request.user.student_user.all():
                             
                         return redirect(stud.get_url)
-                
-                return redirect(teachers)
-
             else:
                 messages.error(request, 'Username və ya şifr yanlışdır!')    
                 

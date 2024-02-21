@@ -168,13 +168,10 @@ class chek(models.Model):
 
 
 
-class month_statistic(models.Model):
-    student_count = models.IntegerField(verbose_name = 'tələbə sayı')
-    month = models.DateField(verbose_name = 'Ay')
+class statistic_ay(models.Model):
+    count_st = models.IntegerField(verbose_name = 'telebe sayi')
+    stat_ay = models.DateField(verbose_name = 'Ay')
+    
 
-    created_date = models.DateTimeField(auto_now_add = True)
-    updated_date = models.DateTimeField(auto_now = True)
 
-    def __str__(self):
-        return str(self.month)
 

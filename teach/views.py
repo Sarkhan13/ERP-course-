@@ -13,16 +13,14 @@ from django.db.models import F
 def teachers(request):
     teachers = teacher.objects.all()
 
-    for teac in teachers:
-
-        if not request.user.is_staff and request.user != teac.user:
-            raise Http404
+    if not request.user.is_staff and not request.user.teacher_user.all():
+        raise Http404
         
-        contex = {
+    contex = {
                 'teachers':teachers,
             }
 
-        return render(request, 'teacher.html',contex)
+    return render(request, 'teacher.html',contex)
 
 
 
@@ -50,8 +48,8 @@ def searching(request):
     pays = pay.objects.all()
 
     if valid_query(searchdata):
-        teachers = teacher.objects.filter(name__contains = searchdata)
-
+        teachers = teacher.objects.filter(name__icontains = searchdata)
+    
     if valid_query(searchdata):
         pays = pay.objects.filter(student__name__icontains =searchdata)
 
@@ -67,17 +65,15 @@ def searching(request):
 
 def grouppage(request):
     groups = group.objects.all()
-
-    for grup in groups:
-
-        if not request.user.is_staff and request.user != grup.teach.user:
-            raise Http404
+    
+    if not request.user.is_staff and not request.user.teacher_user.all():  
+        raise Http404
             
-        contex = {
+    contex = {
                 'groups': groups,
             }
 
-        return render(request, 'groups.html',contex)
+    return render(request, 'groups.html',contex)
 
 
 
@@ -223,10 +219,8 @@ def group_delete(request,id):
 def studentpage(request):
     students = student.objects.all()
 
-    for stud in students:
-
-        if not request.user.is_staff and request.user != stud.user:
-            raise Http404
+    if not request.user.is_staff and request.user.student_user.all() :
+        raise Http404
         
 
     contex = {
@@ -319,12 +313,11 @@ def journalpage(request):
 
     dates = date.objects.all().order_by('date_time')
 
-    for jour in journals:
-        if not request.user.is_staff and jour.student.group.teach.user != request.user: 
-            raise Http404
+    if not request.user.is_staff and not request.user.teacher_user.all(): 
+        raise Http404
 
 
-        contex = {
+    contex = {
             'groups': groups,
             'students': students,
             'journals': journals,
@@ -332,23 +325,22 @@ def journalpage(request):
         }
 
 
-        return render(request, 'journal.html',contex)   
+    return render(request, 'journal.html',contex)   
 
 
 def taskpage(request):
     
     tasks = task.objects.all().order_by('created_date')
 
-    for tas in tasks:
-        if not request.user.is_staff and tas.teacher.user != request.user: 
-            raise Http404
+    if not request.user.is_staff and not request.user.teacher_user.all(): 
+        raise Http404
 
-        context = {
+    context = {
             'tasks': tasks,
         }
 
 
-        return render(request, 'task.html',context) 
+    return render(request, 'task.html',context) 
 
 
 

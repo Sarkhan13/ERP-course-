@@ -2,6 +2,11 @@
 {% load static %}
 
 {% block body %}
+<style>
+  #layout-navbar {
+    display: None !important;
+  }
+</style>
 
           <!-- Content wrapper -->
           <div class="content-wrapper">
@@ -10,7 +15,7 @@
            {% if messages %}
            {% for message in messages %}
             
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger" role="alert" style="width: 95%; margin: auto; margin-top: 20px; ;">
               <strong>{{ message }}</strong>
             </div>
             {% endfor %}

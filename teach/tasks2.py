@@ -1,4 +1,4 @@
-from .models import student,month_statistic
+from .models import student,statistic_ay
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
@@ -17,7 +17,7 @@ def for_chart():
 
     monthly = first_stud.created_date.date()
 
-    current_stat = month_statistic(student_count=stud_count, month=monthly)
+    current_stat = statistic_ay(count_st=stud_count, stat_ay=monthly)
 
     current_stat.save()
 

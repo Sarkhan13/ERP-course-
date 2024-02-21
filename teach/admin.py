@@ -44,4 +44,8 @@ admin.site.register(date,DateAdmin)
 admin.site.register(task,TaskAdmin)
 admin.site.register(pay,PayAdmin)
 admin.site.register(chek,ChekAdmin)
-admin.site.register(month_statistic)
+admin.site.register(statistic_ay)
+
+admin.site.site_header = "ErpCourse Administration"
+admin.site.index_title = "Welcome to ErpCourse Administration"
+admin.site.site_title = "ErpCourse Admin"

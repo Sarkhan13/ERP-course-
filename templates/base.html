@@ -179,27 +179,7 @@
               
             </li>
             {% endif %}
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-                <div data-i18n="Authentications">Authentications</div>
-              </a>
-              <ul class="menu-sub">
-                {% if not request.user.is_authenticated %}
-                <li class="menu-item">
-                  <a href="{% url 'login' %}" class="menu-link">
-                    <div data-i18n="Basic">Login</div>
-                  </a>
-                </li>
-                {% endif %}
-                <li class="menu-item">
-                  <a href="{% url 'logout' %}" class="menu-link">
-                    <div data-i18n="Basic">Logout</div>
-                  </a>
-                </li>
-                
-              </ul>
-            </li>
+           
             
             {% if request.user.is_superuser or request.user.teacher_user.first %}
             <li class="menu-item">
@@ -242,6 +222,27 @@
               </ul>
             </li>
             {% endif %}
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+                <div data-i18n="Authentications">Authentications</div>
+              </a>
+              <ul class="menu-sub">
+                {% if not request.user.is_authenticated %}
+                <li class="menu-item">
+                  <a href="{% url 'login' %}" class="menu-link">
+                    <div data-i18n="Basic">Login</div>
+                  </a>
+                </li>
+                {% endif %}
+                <li class="menu-item">
+                  <a href="{% url 'logout' %}" class="menu-link">
+                    <div data-i18n="Basic">Logout</div>
+                  </a>
+                </li>
+                
+              </ul>
+            </li>
           </ul>
         </aside>
         <!-- / Menu -->
@@ -286,8 +287,8 @@
               <div class="navbar-nav align-items-center">
                 
                 <div class="nav-item d-flex align-items-center">
-                  <form action="{% url 'search' %}"></form>
-                  <button class="searchbx" type="submit"><i class="bx bx-search fs-4 lh-0"></i></button>
+                  <form action="{% url 'search' %}" style="display: flex; margin-top: 17px; ">
+                    <button class="searchbx" type="submit"><i class="bx bx-search fs-4 lh-0" ></i></button>
                   <input
                     type="text"
                     class="form-control border-0 shadow-none"
@@ -296,6 +297,7 @@
                     name="query"
                     value="{{ searchdata }}"
                   />
+                  
                 </form>
                 </div>
             
